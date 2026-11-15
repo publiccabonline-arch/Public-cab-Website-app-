@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PublicCab.online - Ride • Parcel • Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-storage.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #ffd700;
+            color: #000;
+            overflow-x: hidden;
+        }
+        /* Header */
+        header {
+            background: #001f3f;
+            color: #fff;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .logo-area img, .logo-placeholder {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #ffd700;
+            object-fit: cover;
+            background: #ffd700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #000;
+        }
+        .brand-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffd700;
+        }
+        .brand-sub {
+            font-size: 10px;
+            color: #fff;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 12px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        /* Hero Section - Compact */
+        .hero {
+            text-align: center;
+            padding: 20px 10px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+        }
+        .hero h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #000;
+        }
+        .hero h1 span {
+            color: #d32f2f;
+        }
+        .hero p {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Moving Car Animation Banner */
+        .banner-slider {
+            background: #000;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 8px 0;
+            margin: 10px 0;
+            border-radius: 6px;
+        }
+        .slider-track {
+            display: inline-block;
+            animation: scrollVehicles 12s linear infinite;
+        }
+        .slider-track i {
+            font-size: 28px;
+            color: #ffd700;
+            margin: 0 25px;
+        }
+        @keyframes scrollVehicles {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* 3D Download Button */
+        .download-btn-container {
+            margin: 15px 0;
+        }
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(to bottom, #ff3333, #b30000);
+            color: #fff;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: 800;
+            border-radius: 40px;
+            text-decoration: none;
+            box-shadow: 0 6px 0 #660000, 0 10px 15px rgba(0,0,0,0.3);
+            animation: bounce 1.5s infinite;
+            cursor: pointer;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Stats Bar - Compact */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #111;
+            color: #fff;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 8px;
+        }
+        .stat-item h3 {
+            color: #ffd700;
+            font-size: 15px;
+        }
+        .stat-item p {
+            font-size: 11px;
+            color: #ccc;
+        }
+
+        /* Services Grid - Compact */
+        .services {
+            padding: 15px 10px;
+            text-align: center;
+        }
+        .services h2 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            background: #000;
+            color: #ffd700;
+            display: inline-block;
+            padding: 4px 15px;
+            border-radius: 15px;
+        }
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .service-card {
+            background: #fff;
+            padding: 10px 5px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .service-card i {
+            font-size: 22px;
+            color: #d32f2f;
+            margin-bottom: 5px;
+        }
+        .service-card h3 {
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+        .service-card p {
+            font-size: 9px;
+            color: #666;
+        }
+
+        /* Installation Guide Section with Dynamic Image */
+        .install-guide {
+            background: #001f3f;
+            color: #fff;
+            padding: 20px 10px;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .install-guide h2 {
+            color: #ffd700;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .guide-image-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 220px;
+            border-radius: 8px;
+            border: 2px solid #ffd700;
+            object-fit: contain;
+        }
+        .guide-placeholder {
+            font-size: 12px;
+            color: #aaa;
+            border: 2px dashed #ffd700;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        /* Admin Modal */
+        #adminModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .admin-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            color: #000;
+        }
+        .admin-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .admin-box button {
+            background: #001f3f;
+            color: #fff;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .close-admin {
+            float: right;
+            font-size: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-area" id="logoClickArea">
+            <div id="logoContainer" class="logo-placeholder">PC</div>
+            <div>
+                <div class="brand-title">PublicCab.online</div>
+                <div class="brand-sub">Ride • Parcel • Shop</div>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="#"><i class="fa-solid fa-circle-info"></i> About</a></li>
+                <li><a href="#"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Your Trusted <span>Travel Partner</span></h1>
+        <p>Anywhere, Anytime with 50% Cashback!</p>
+
+        <!-- Moving Car Animation Banner -->
+        <div class="banner-slider">
+            <div class="slider-track">
+                <i class="fa-solid fa-car-side"></i>
+                <i class="fa-solid fa-ambulance"></i>
+                <i class="fa-solid fa-motorcycle"></i>
+                <i class="fa-solid fa-truck-fast"></i>
+                <i class="fa-solid fa-taxi"></i>
+                <i class="fa-solid fa-car-side"></i>
+                <i class="fa-solid fa-ambulance"></i>
+                <i class="fa-solid fa-motorcycle"></i>
+            </div>
+        </div>
+
+        <div class="download-btn-container">
+            <a href="#" class="download-btn" id="downloadBtn">
+                <i class="fa-solid fa-download"></i> Download App Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <h3 id="downloadCount">1,24,568+</h3>
+            <p>Downloads</p>
+        </div>
+        <div class="stat-item">
+            <h3 id="searchingCount">48,732+</h3>
+            <p>Searching</p>
+        </div>
+        <div class="stat-item">
+            <h3 id="activeUsersCount">72,950+</h3>
+            <p>Active Users</p>
+        </div>
+        <div class="stat-item">
+            <h3 style="color: #2ecc71;"><i class="fa-solid fa-circle" style="font-size: 8px;"></i> Live</h3>
+            <p>Online</p>
+        </div>
+    </div>
+
+    <!-- Services Section -->
+    <section class="services">
+        <h2>Our Services</h2>
+        <div class="service-grid">
+            <div class="service-card">
+                <i class="fa-solid fa-car"></i>
+                <h3>Cab</h3>
+                <p>Ride</p>
+            </div>
+            <div class="service-card">
+                <i class="fa-solid fa-motorcycle"></i>
+                <h3>Bike</h3>
+                <p>Fast</p>
+            </div>
+            <div class="service-card">
+                <i class="fa-solid fa-ambulance"></i>
+                <h3>Ambulance</h3>
+                <p>24/7</p>
+            </div>
+            <div class="service-card">
+                <i class="fa-solid fa-box-open"></i>
+                <h3>Parcel</h3>
+                <p>Safe</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Install Guide Section (Dynamic from Admin) -->
+    <section class="install-guide">
+        <h2>How to Install the App?</h2>
+        <div id="guideContainer" class="guide-image-container">
+            <div class="guide-placeholder">Admin can upload installation guide photo from Admin Panel.</div>
+        </div>
+    </section>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminModal">
+        <div class="admin-box">
+            <span class="close-admin" onclick="closeAdminModal()">&times;</span>
+            <div id="loginSection">
+                <h3>Admin Panel Login</h3>
+                <p style="font-size: 12px; color: #666; margin-bottom: 8px;">Enter password to unlock</p>
+                <input type="password" id="adminPassInput" placeholder="Enter Password">
+                <button onclick="verifyAdminPassword()">Login</button>
+            </div>
+            <div id="panelSection" style="display:none;">
+                <h3>Admin Dashboard</h3>
+                <hr style="margin: 8px 0;">
+                <div style="text-align: left; margin-bottom: 10px;">
+                    <label style="font-size: 11px;"><b>Company Logo:</b></label>
+                    <input type="file" id="logoFileInput" accept="image/*">
+                    <button onclick="uploadLogo()">Upload Logo</button>
+                </div>
+                <div style="text-align: left; margin-bottom: 10px;">
+                    <label style="font-size: 11px;"><b>Install Guide Photo:</b></label>
+                    <input type="file" id="guideFileInput" accept="image/*">
+                    <button onclick="uploadGuidePhoto()">Upload Guide Photo</button>
+                </div>
+                <div style="text-align: left;">
+                    <label style="font-size: 11px;"><b>APK File:</b></label>
+                    <input type="file" id="apkFileInput" accept=".apk">
+                    <button onclick="uploadApk()">Upload APK</button>
+                    <button onclick="deleteApk()" style="background: #d32f2f; margin-left: 5px;">Delete APK</button>
+                </div>
+                <p id="uploadStatus" style="margin-top: 8px; font-size: 12px; color: green; font-weight: bold;"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 PublicCab.online. All Rights Reserved. Secure & Trusted</p>
+    </footer>
+
+    <!-- Script & Firebase Configuration -->
+    <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyDJmu9uD5rT5ee1jNLpMQaTVIa_-yTrPzw",
+          authDomain: "public-service-11054.firebaseapp.com",
+          databaseURL: "https://public-service-11054-default-rtdb.firebaseio.com",
+          projectId: "public-service-11054",
+          storageBucket: "public-service-11054.firebasestorage.app",
+          messagingSenderId: "639313474404",
+          appId: "1:639313474404:web:9ac4645e521021c044c071",
+          measurementId: "G-ZMCRHQ4VC3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const storage = firebase.storage();
+
+        // Audio Greeting
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if ('speechSynthesis' in window) {
+                    const speech = new SpeechSynthesisUtterance("Welcome to Public Cab Online. Your trusted travel partner. You can download our secure application safely with complete confidence.");
+                    speech.rate = 1.0;
+                    speech.pitch = 1.0;
+                    speech.lang = 'en-US';
+                    window.speechSynthesis.speak(speech);
+                }
+            }, 1000);
+        });
+
+        // Real-time Counters sync
+        database.ref('counters').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                if(data.downloads) document.getElementById('downloadCount').innerText = Number(data.downloads).toLocaleString() + '+';
+                if(data.searching) document.getElementById('searchingCount').innerText = Number(data.searching).toLocaleString() + '+';
+                if(data.activeUsers) document.getElementById('activeUsersCount').innerText = Number(data.activeUsers).toLocaleString() + '+';
+            }
+        });
+
+        // Dynamic fluctuations for live counters
+        setInterval(() => {
+            database.ref('counters').transaction((currentData) => {
+                if (!currentData) {
+                    return { downloads: 124568, searching: 48732, activeUsers: 72950 };
+                }
+                currentData.downloads += Math.floor(Math.random() * 3);
+                currentData.searching += Math.floor(Math.random() * 5) - 2;
+                currentData.activeUsers += Math.floor(Math.random() * 3) - 1;
+                return currentData;
+            });
+        }, 5000);
+
+        // Fetch Settings (Logo, APK, Guide Photo)
+        database.ref('settings').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                if (data.logoUrl) {
+                    document.getElementById('logoContainer').innerHTML = `<img src="${data.logoUrl}" alt="Logo">`;
+                }
+                if (data.guideUrl) {
+                    document.getElementById('guideContainer').innerHTML = `<img src="${data.guideUrl}" alt="Installation Guide">`;
+                }
+                window.currentApkUrl = data.apkUrl || '#';
+            }
+        });
+
+        // Download Action
+        document.getElementById('downloadBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.currentApkUrl && window.currentApkUrl !== '#') {
+                window.location.href = window.currentApkUrl;
+            } else {
+                alert('APK file is not uploaded yet!');
+            }
+        });
+
+        // Admin Panel Trigger (18 Clicks on Logo)
+        let clickCount = 0;
+        document.getElementById('logoClickArea').addEventListener('click', () => {
+            clickCount++;
+            if (clickCount >= 18) {
+                clickCount = 0;
+                document.getElementById('adminModal').style.display = 'flex';
+            }
+        });
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('panelSection').style.display = 'none';
+            document.getElementById('adminPassInput').value = '';
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === '78764825555') {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('panelSection').style.display = 'block';
+            } else {
+                alert('Incorrect Password!');
+            }
+        }
+
+        // Logo Upload
+        function uploadLogo() {
+            const fileInput = document.getElementById('logoFileInput');
+            if (fileInput.files.length === 0) return alert('Please select an image');
+            const file = fileInput.files[0];
+            storage.ref('logos/' + file.name).put(file).then(snapshot => {
+                snapshot.ref.getDownloadURL().then(url => {
+                    database.ref('settings').update({ logoUrl: url });
+                    document.getElementById('uploadStatus').innerText = 'Logo uploaded successfully!';
+                });
+            });
+        }
+
+        // Guide Photo Upload
+        function uploadGuidePhoto() {
+            const fileInput = document.getElementById('guideFileInput');
+            if (fileInput.files.length === 0) return alert('Please select a guide image');
+            const file = fileInput.files[0];
+            storage.ref('guides/' + file.name).put(file).then(snapshot => {
+                snapshot.ref.getDownloadURL().then(url => {
+                    database.ref('settings').update({ guideUrl: url });
+                    document.getElementById('uploadStatus').innerText = 'Guide photo uploaded successfully!';
+                });
+            });
+        }
+
+        // APK Upload
+        function uploadApk() {
+            const fileInput = document.getElementById('apkFileInput');
+            if (fileInput.files.length === 0) return alert('Please select an APK file');
+            const file = fileInput.files[0];
+            storage.ref('apks/' + file.name).put(file).then(snapshot => {
+                snapshot.ref.getDownloadURL().then(url => {
+                    database.ref('settings').update({ apkUrl: url });
+                    document.getElementById('uploadStatus').innerText = 'APK uploaded successfully!';
+                });
+            });
+        }
+
+        // Delete APK
+        function deleteApk() {
+            database.ref('settings').update({ apkUrl: null });
+            document.getElementById('uploadStatus').innerText = 'APK deleted successfully!';
+        }
+    </script>
+</body>
+</html>
